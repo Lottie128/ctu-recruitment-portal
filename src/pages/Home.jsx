@@ -1,170 +1,239 @@
 import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
-import {
-  GraduationCap,
-  Award,
-  Plane,
-  Clock,
-  MapPin,
-  Heart,
-  CheckCircle2,
-  FileText,
-  Home as HomeIcon,
-  Sparkles,
-  Users,
-  Building2,
-} from 'lucide-react'
+import { GraduationCap, Plane, MapPin, FileText, CreditCard, Calendar, Car, CheckCircle, ArrowRight, Users, Award, Globe, Heart } from 'lucide-react'
+import { processSteps } from '../data/coursesData'
 
 const Home = () => {
-  const benefits = [
+  const iconMap = {
+    FileText, Mail: FileText, CreditCard, Plane, Calendar, Car, MapPin, GraduationCap
+  }
+
+  const features = [
     {
       icon: Award,
-      title: '50% Tuition Scholarship',
-      description: 'Exclusive scholarship for all students applying through ZeroAI Technologies',
-      color: 'text-yellow-500',
-    },
-    {
-      icon: Clock,
-      title: 'Offer Letter in 30 Minutes',
-      description: 'Fast-track admission process with quick turnaround time',
-      color: 'text-blue-500',
-    },
-    {
-      icon: FileText,
-      title: 'Acceptance Letter in 24 Hours',
-      description: 'Get your acceptance letter within 24 hours of payment',
-      color: 'text-green-500',
+      title: "50% Tuition Scholarship",
+      description: "Automatic 50% discount on all courses for Zambian students. Study at world-class universities at half the cost.",
+      highlight: true
     },
     {
       icon: Plane,
-      title: 'Free Airport Pickup',
-      description: 'Complimentary pickup from airport to university or residence',
-      color: 'text-purple-500',
+      title: "Free Airport Pickup",
+      description: "Complimentary airport pickup and drop-off service when you arrive in India. We'll be there to welcome you."
     },
     {
       icon: MapPin,
-      title: 'Free 3-Day India Tour',
-      description: 'Visit Manali, Himachal, Taj Mahal, and Red Fort - completely free!',
-      color: 'text-pink-500',
+      title: "Free 3-Day India Tour",
+      description: "Experience India with our guided tour: Manali, Taj Mahal, Red Fort, and Himachal Pradesh's natural beauty."
     },
     {
-      icon: Heart,
-      title: 'End-to-End Support',
-      description: 'Visa assistance, flight booking, and accommodation guidance',
-      color: 'text-red-500',
+      icon: FileText,
+      title: "Fast Processing",
+      description: "Receive your offer letter within 30 minutes and acceptance letter within 24 hours of application."
     },
+    {
+      icon: CheckCircle,
+      title: "End-to-End Support",
+      description: "Complete assistance with visa applications, flight bookings, accommodation, and settling in India."
+    },
+    {
+      icon: Users,
+      title: "Student Community",
+      description: "Join 100+ Zambian students already thriving at CT University with our comprehensive support network."
+    }
   ]
 
-  const processSteps = [
-    { step: 1, title: 'Apply Online', description: 'Fill out the application form on our portal' },
-    { step: 2, title: 'Offer Letter', description: 'Receive your offer letter within 30 minutes' },
-    { step: 3, title: 'Make Payment', description: 'Pay registration fee and tuition' },
-    { step: 4, title: 'Acceptance Letter', description: 'Get acceptance letter in 24 hours with 50% scholarship' },
-    { step: 5, title: 'Visa & Flight', description: 'We assist with visa application and flight booking' },
-    { step: 6, title: 'Arrival & Tour', description: 'Free pickup, 3-day tour, then to university/residence' },
+  const stats = [
+    { value: "87+", label: "Courses Available", icon: GraduationCap },
+    { value: "50%", label: "Tuition Discount", icon: Award },
+    { value: "100+", label: "Students Placed", icon: Users },
+    { value: "30min", label: "Offer Letter Time", icon: CheckCircle }
+  ]
+
+  const testimonials = [
+    {
+      name: "Sarah M.",
+      course: "B.Tech Computer Science",
+      quote: "The 50% scholarship made my dream of studying abroad affordable. The support from ZeroAI Technologies throughout the process was exceptional!",
+      year: "2024 Intake"
+    },
+    {
+      name: "James K.",
+      course: "MBA",
+      quote: "From application to arrival, everything was smooth. The 3-day India tour was an amazing way to start my journey. Highly recommend!",
+      year: "2025 Intake"
+    },
+    {
+      name: "Mary C.",
+      course: "B.Pharmacy",
+      quote: "Getting my offer letter in 30 minutes was incredible. CT University has world-class facilities and the scholarship made it possible for me.",
+      year: "2025 Intake"
+    }
   ]
 
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-blue-900 via-blue-800 to-blue-900 text-white py-20 px-4 overflow-hidden">
+      <section className="relative bg-gradient-to-br from-primary-600 via-primary-700 to-primary-900 text-white py-20 lg:py-32 overflow-hidden">
         <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-10 left-10 w-72 h-72 bg-yellow-400 rounded-full blur-3xl"></div>
-          <div className="absolute bottom-10 right-10 w-96 h-96 bg-purple-500 rounded-full blur-3xl"></div>
+          <div className="absolute inset-0" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%23ffffff" fill-opacity="0.4"%3E%3Cpath d="M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")' }} />
         </div>
-        
-        <div className="max-w-7xl mx-auto relative z-10">
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             className="text-center"
           >
-            <div className="inline-block mb-4 px-4 py-2 bg-yellow-500 text-blue-900 rounded-full font-semibold text-sm">
-              <Sparkles className="inline h-4 w-4 mr-2" />
-              Intake: July 2026 - Registrations Open!
+            <div className="inline-block mb-6 px-6 py-2 bg-accent-500 rounded-full text-sm font-semibold">
+              🎓 July 2026 Intake Now Open!
             </div>
-            
-            <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">
-              Study at CT University, India
-              <br />
-              <span className="text-yellow-400">with 50% Scholarship</span>
+            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight">
+              Study in India with<br />
+              <span className="text-accent-400">50% Scholarship</span>
             </h1>
-            
-            <p className="text-xl md:text-2xl mb-4 text-blue-100">
-              A CSR Initiative by ZeroAI Technologies Inc
+            <p className="text-xl md:text-2xl text-gray-100 mb-8 max-w-3xl mx-auto">
+              Get your degree from CT University, India with exclusive benefits for Zambian students
             </p>
-            
-            <p className="text-lg md:text-xl mb-8 max-w-3xl mx-auto text-blue-100">
-              Join hundreds of Zambian students pursuing world-class education in India. 
-              Get exclusive benefits including free airport pickup, complimentary 3-day tour, 
-              and comprehensive support throughout your journey.
-            </p>
-            
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link to="/apply" className="btn-secondary text-lg">
-                Apply Now - Get 50% Off
+
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
+              <Link
+                to="/apply"
+                className="bg-accent-500 text-white px-8 py-4 rounded-lg font-bold text-lg hover:bg-accent-600 transition-all shadow-lg hover:shadow-xl flex items-center space-x-2"
+              >
+                <span>Apply Now</span>
+                <ArrowRight className="w-5 h-5" />
               </Link>
-              <Link to="/about" className="bg-white text-blue-900 hover:bg-blue-50 font-semibold py-3 px-8 rounded-lg transition-all duration-300 shadow-lg hover:shadow-xl">
-                Learn More
+              <Link
+                to="/contact"
+                className="bg-white text-primary-600 px-8 py-4 rounded-lg font-bold text-lg hover:bg-gray-100 transition-all"
+              >
+                Contact Us
               </Link>
             </div>
-            
-            <div className="mt-12 grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
-              <div className="text-center">
-                <div className="text-3xl md:text-4xl font-bold text-yellow-400">50%</div>
-                <div className="text-sm text-blue-200">Tuition Discount</div>
+
+            <div className="flex flex-wrap justify-center gap-8 text-sm">
+              <div className="flex items-center space-x-2">
+                <CheckCircle className="w-5 h-5 text-accent-400" />
+                <span>50% Tuition Discount</span>
               </div>
-              <div className="text-center">
-                <div className="text-3xl md:text-4xl font-bold text-yellow-400">30min</div>
-                <div className="text-sm text-blue-200">Offer Letter</div>
+              <div className="flex items-center space-x-2">
+                <CheckCircle className="w-5 h-5 text-accent-400" />
+                <span>Free Airport Pickup</span>
               </div>
-              <div className="text-center">
-                <div className="text-3xl md:text-4xl font-bold text-yellow-400">FREE</div>
-                <div className="text-sm text-blue-200">3-Day Tour</div>
+              <div className="flex items-center space-x-2">
+                <CheckCircle className="w-5 h-5 text-accent-400" />
+                <span>Free 3-Day Tour</span>
               </div>
-              <div className="text-center">
-                <div className="text-3xl md:text-4xl font-bold text-yellow-400">100%</div>
-                <div className="text-sm text-blue-200">Support</div>
+              <div className="flex items-center space-x-2">
+                <CheckCircle className="w-5 h-5 text-accent-400" />
+                <span>Visa Assistance</span>
               </div>
             </div>
           </motion.div>
         </div>
       </section>
 
-      {/* Benefits Section */}
-      <section className="py-16 px-4 bg-white">
-        <div className="max-w-7xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            className="text-center mb-12"
-          >
-            <h2 className="section-title">Why Choose ZeroAI Technologies?</h2>
-            <p className="text-gray-600 text-lg max-w-2xl mx-auto">
-              We're not just a recruitment agency - we're your partner in education, 
-              committed to making your dreams affordable and achievable.
+      {/* Stats Section */}
+      <section className="py-16 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            {stats.map((stat, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1 }}
+                viewport={{ once: true }}
+                className="text-center p-6 bg-gradient-to-br from-primary-50 to-primary-100 rounded-xl"
+              >
+                <stat.icon className="w-10 h-10 text-primary-600 mx-auto mb-3" />
+                <div className="text-4xl font-bold text-primary-600 mb-2">{stat.value}</div>
+                <div className="text-sm text-gray-600">{stat.label}</div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Features Section */}
+      <section className="py-20 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">Why Choose Us?</h2>
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+              Comprehensive support from application to graduation
             </p>
-          </motion.div>
+          </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {benefits.map((benefit, index) => {
-              const Icon = benefit.icon
+            {features.map((feature, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1 }}
+                viewport={{ once: true }}
+                className={`p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all ${
+                  feature.highlight
+                    ? 'bg-gradient-to-br from-accent-500 to-accent-600 text-white transform hover:scale-105'
+                    : 'bg-white hover:bg-gray-50'
+                }`}
+              >
+                <div className={`w-14 h-14 rounded-lg flex items-center justify-center mb-6 ${
+                  feature.highlight ? 'bg-white/20' : 'bg-primary-100'
+                }`}>
+                  <feature.icon className={`w-7 h-7 ${
+                    feature.highlight ? 'text-white' : 'text-primary-600'
+                  }`} />
+                </div>
+                <h3 className={`text-xl font-bold mb-3 ${
+                  feature.highlight ? 'text-white' : 'text-gray-900'
+                }`}>
+                  {feature.title}
+                </h3>
+                <p className={feature.highlight ? 'text-white/90' : 'text-gray-600'}>
+                  {feature.description}
+                </p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Process Timeline */}
+      <section className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">Application Process</h2>
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+              Your journey from application to campus in 8 simple steps
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {processSteps.map((step, index) => {
+              const IconComponent = iconMap[step.icon] || FileText
               return (
                 <motion.div
-                  key={index}
+                  key={step.id}
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
                   transition={{ delay: index * 0.1 }}
-                  className="card hover:scale-105 transition-transform duration-300"
+                  viewport={{ once: true }}
+                  className="relative"
                 >
-                  <div className={`${benefit.color} mb-4`}>
-                    <Icon className="h-12 w-12" />
+                  <div className="bg-white border-2 border-primary-200 rounded-xl p-6 hover:border-primary-400 transition-all">
+                    <div className="absolute -top-4 left-6 bg-primary-600 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm">
+                      {step.id}
+                    </div>
+                    <div className="w-12 h-12 bg-primary-100 rounded-lg flex items-center justify-center mb-4 mt-2">
+                      <IconComponent className="w-6 h-6 text-primary-600" />
+                    </div>
+                    <div className="text-xs text-accent-600 font-semibold mb-2">{step.timeline}</div>
+                    <h3 className="text-lg font-bold text-gray-900 mb-2">{step.title}</h3>
+                    <p className="text-sm text-gray-600">{step.description}</p>
                   </div>
-                  <h3 className="text-xl font-bold mb-2">{benefit.title}</h3>
-                  <p className="text-gray-600">{benefit.description}</p>
                 </motion.div>
               )
             })}
@@ -172,167 +241,66 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Process Section */}
-      <section className="py-16 px-4 bg-gray-50">
-        <div className="max-w-7xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            className="text-center mb-12"
-          >
-            <h2 className="section-title">Your Journey to CT University</h2>
-            <p className="text-gray-600 text-lg">
-              Simple, transparent, and supported every step of the way
-            </p>
-          </motion.div>
+      {/* Testimonials */}
+      <section className="py-20 bg-gradient-to-br from-primary-50 to-primary-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">Student Success Stories</h2>
+            <p className="text-xl text-gray-600">Hear from Zambian students already studying at CT University</p>
+          </div>
 
-          <div className="relative">
-            {/* Connection Line */}
-            <div className="hidden md:block absolute top-1/2 left-0 right-0 h-1 bg-blue-200 -z-10"></div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-6">
-              {processSteps.map((item, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: index * 0.1 }}
-                  className="relative"
-                >
-                  <div className="bg-white rounded-xl shadow-lg p-6 text-center hover:shadow-2xl transition-shadow">
-                    <div className="w-12 h-12 bg-blue-600 text-white rounded-full flex items-center justify-center text-xl font-bold mx-auto mb-4">
-                      {item.step}
-                    </div>
-                    <h3 className="font-bold mb-2 text-sm">{item.title}</h3>
-                    <p className="text-xs text-gray-600">{item.description}</p>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {testimonials.map((testimonial, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1 }}
+                viewport={{ once: true }}
+                className="bg-white p-8 rounded-xl shadow-lg"
+              >
+                <div className="text-4xl text-primary-600 mb-4">“</div>
+                <p className="text-gray-700 mb-6 italic">{testimonial.quote}</p>
+                <div className="flex items-center justify-between pt-4 border-t border-gray-200">
+                  <div>
+                    <div className="font-bold text-gray-900">{testimonial.name}</div>
+                    <div className="text-sm text-gray-600">{testimonial.course}</div>
                   </div>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Accommodation Section */}
-      <section className="py-16 px-4 bg-white">
-        <div className="max-w-7xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            className="text-center mb-12"
-          >
-            <h2 className="section-title">Affordable Accommodation Options</h2>
-            <p className="text-gray-600 text-lg">
-              Choose what works best for you - we've got you covered
-            </p>
-          </motion.div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              className="card border-2 border-blue-200"
-            >
-              <HomeIcon className="h-12 w-12 text-blue-600 mb-4" />
-              <h3 className="text-2xl font-bold mb-2">Near University</h3>
-              <div className="text-4xl font-bold text-blue-600 mb-4">$150<span className="text-lg text-gray-600">/month</span></div>
-              <ul className="space-y-2 mb-6">
-                <li className="flex items-start">
-                  <CheckCircle2 className="h-5 w-5 text-green-500 mr-2 flex-shrink-0 mt-0.5" />
-                  <span>Includes food</span>
-                </li>
-                <li className="flex items-start">
-                  <CheckCircle2 className="h-5 w-5 text-green-500 mr-2 flex-shrink-0 mt-0.5" />
-                  <span>Close to university campus</span>
-                </li>
-                <li className="flex items-start">
-                  <CheckCircle2 className="h-5 w-5 text-green-500 mr-2 flex-shrink-0 mt-0.5" />
-                  <span>Free airport drop-off at residence</span>
-                </li>
-                <li className="flex items-start">
-                  <CheckCircle2 className="h-5 w-5 text-green-500 mr-2 flex-shrink-0 mt-0.5" />
-                  <span>Guidance to university</span>
-                </li>
-                <li className="text-sm text-gray-600 italic">
-                  * Electricity at government rates (extra)
-                </li>
-              </ul>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              className="card border-2 border-purple-200"
-            >
-              <Building2 className="h-12 w-12 text-purple-600 mb-4" />
-              <h3 className="text-2xl font-bold mb-2">In City</h3>
-              <div className="text-4xl font-bold text-purple-600 mb-4">$250<span className="text-lg text-gray-600">/month</span></div>
-              <ul className="space-y-2 mb-6">
-                <li className="flex items-start">
-                  <CheckCircle2 className="h-5 w-5 text-green-500 mr-2 flex-shrink-0 mt-0.5" />
-                  <span>Includes food & rent</span>
-                </li>
-                <li className="flex items-start">
-                  <CheckCircle2 className="h-5 w-5 text-green-500 mr-2 flex-shrink-0 mt-0.5" />
-                  <span>Transport included</span>
-                </li>
-                <li className="flex items-start">
-                  <CheckCircle2 className="h-5 w-5 text-green-500 mr-2 flex-shrink-0 mt-0.5" />
-                  <span>Free airport drop-off at residence</span>
-                </li>
-                <li className="flex items-start">
-                  <CheckCircle2 className="h-5 w-5 text-green-500 mr-2 flex-shrink-0 mt-0.5" />
-                  <span>Guidance to university</span>
-                </li>
-                <li className="text-sm text-gray-600 italic">
-                  * Electricity at government rates (extra)
-                </li>
-              </ul>
-            </motion.div>
-          </div>
-
-          <div className="mt-8 text-center">
-            <p className="text-gray-600 mb-4">
-              On-campus accommodation also available with various room configurations
-            </p>
-            <Link to="/apply" className="btn-primary">
-              View All Accommodation Options
-            </Link>
+                  <div className="text-xs text-primary-600 font-semibold">{testimonial.year}</div>
+                </div>
+              </motion.div>
+            ))}
           </div>
         </div>
       </section>
 
       {/* CTA Section */}
-      <section className="py-16 px-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white">
-        <div className="max-w-4xl mx-auto text-center">
+      <section className="py-20 bg-gradient-to-r from-primary-600 to-primary-800 text-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
-            <h2 className="text-3xl md:text-4xl font-bold mb-6">
-              Ready to Start Your Educational Journey?
-            </h2>
-            <p className="text-xl mb-8">
-              Join ZeroAI Technologies' student recruitment program today and unlock 
-              a world of opportunities at CT University, India.
+            <h2 className="text-4xl md:text-5xl font-bold mb-6">Ready to Begin Your Journey?</h2>
+            <p className="text-xl text-gray-100 mb-8 max-w-2xl mx-auto">
+              Apply now for July 2026 intake and get your offer letter within 30 minutes
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link to="/apply" className="bg-white text-blue-600 hover:bg-gray-100 font-semibold py-4 px-8 rounded-lg transition-all duration-300 shadow-lg hover:shadow-xl text-lg">
-                Apply Now - July 2026 Intake
+              <Link
+                to="/apply"
+                className="bg-accent-500 text-white px-8 py-4 rounded-lg font-bold text-lg hover:bg-accent-600 transition-all shadow-lg hover:shadow-xl inline-flex items-center justify-center space-x-2"
+              >
+                <span>Apply Now</span>
+                <ArrowRight className="w-5 h-5" />
               </Link>
-              <Link to="/contact" className="border-2 border-white hover:bg-white hover:text-blue-600 font-semibold py-4 px-8 rounded-lg transition-all duration-300 text-lg">
-                Contact Us
+              <Link
+                to="/about"
+                className="bg-white text-primary-600 px-8 py-4 rounded-lg font-bold text-lg hover:bg-gray-100 transition-all inline-flex items-center justify-center space-x-2"
+              >
+                <span>Learn More</span>
               </Link>
             </div>
-            <p className="mt-8 text-sm text-blue-100">
-              Under the supervision of <strong>Lottie Mukuka</strong>, Founder & CEO, ZeroAI Technologies Inc
-            </p>
           </motion.div>
         </div>
       </section>
