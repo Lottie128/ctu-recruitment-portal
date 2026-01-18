@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { Menu, X, GraduationCap } from 'lucide-react'
+import { Menu, X } from 'lucide-react'
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false)
@@ -23,12 +23,18 @@ const Navbar = () => {
         <div className="flex justify-between items-center h-20">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-3 group">
-            <div className="w-12 h-12 bg-gradient-to-br from-primary-600 to-primary-800 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
-              <GraduationCap className="w-7 h-7 text-white" />
-            </div>
-            <div>
-              <div className="text-xl font-bold text-gray-900">CT University</div>
-              <div className="text-xs text-primary-600 font-semibold">ZeroAI Technologies</div>
+            <img 
+              src="https://zeroaitech.tech/logo.png" 
+              alt="ZeroAI Technologies" 
+              className="h-12 w-auto group-hover:scale-110 transition-transform"
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = 'https://via.placeholder.com/150x50?text=ZeroAI+Tech'
+              }}
+            />
+            <div className="hidden sm:block">
+              <div className="text-lg font-bold text-gray-900">CT University Recruitment</div>
+              <div className="text-xs text-primary-600 font-semibold">by ZeroAI Technologies</div>
             </div>
           </Link>
 

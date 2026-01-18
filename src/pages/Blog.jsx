@@ -1,8 +1,11 @@
 import { motion } from 'framer-motion'
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Calendar, Clock, User, ArrowRight, BookOpen, Plane, Heart, FileText } from 'lucide-react'
 
 const Blog = () => {
+  const [selectedCategory, setSelectedCategory] = useState('All')
+
   const blogPosts = [
     {
       id: 'visa-guide-2026',
@@ -16,33 +19,44 @@ const Blog = () => {
       image: "visa"
     },
     {
+      id: 'hindi-phrases',
+      title: "Essential Hindi Phrases for Students in India",
+      excerpt: "Learn 50+ basic Hindi phrases and words to help you communicate, make friends, and navigate daily life in India with confidence.",
+      author: "Lottie Mukuka",
+      date: "January 12, 2026",
+      readTime: "10 min read",
+      category: "Student Life",
+      icon: BookOpen,
+      image: "language"
+    },
+    {
+      id: 'cost-of-living',
+      title: "Cost of Living for Students in India 2026",
+      excerpt: "Complete breakdown of monthly expenses including accommodation, food, transport, and entertainment for international students studying in India.",
+      author: "Lottie Mukuka",
+      date: "January 10, 2026",
+      readTime: "7 min read",
+      category: "Student Life",
+      icon: BookOpen,
+      image: "money"
+    },
+    {
       id: 'why-study-india',
       title: "Why Study in India? 10 Reasons for Zambian Students",
       excerpt: "Discover why India has become the destination of choice for thousands of international students, including affordable education and cultural diversity.",
       author: "Lottie Mukuka",
-      date: "January 10, 2026",
+      date: "January 8, 2026",
       readTime: "6 min read",
       category: "Study Abroad",
       icon: BookOpen,
       image: "study"
     },
     {
-      id: 'student-life',
-      title: "Life at CT University: A Student's Perspective",
-      excerpt: "Hear from current Zambian students about their experiences at CT University - from campus facilities to social life and academics.",
-      author: "Sarah M.",
-      date: "January 5, 2026",
-      readTime: "10 min read",
-      category: "Student Life",
-      icon: Heart,
-      image: "campus"
-    },
-    {
       id: 'travel-prep',
       title: "How to Prepare for Your Journey to India",
       excerpt: "Essential tips on what to pack, cultural norms to know, and how to make your transition to India smooth and stress-free.",
       author: "Lottie Mukuka",
-      date: "December 28, 2025",
+      date: "January 5, 2026",
       readTime: "7 min read",
       category: "Travel Tips",
       icon: Plane,
@@ -53,26 +67,19 @@ const Blog = () => {
       title: "Understanding the 50% Scholarship Program",
       excerpt: "A detailed breakdown of our exclusive scholarship program for Zambian students and how it makes studying in India affordable.",
       author: "Lottie Mukuka",
-      date: "December 20, 2025",
+      date: "January 3, 2026",
       readTime: "5 min read",
       category: "Scholarship",
       icon: BookOpen,
       image: "scholarship"
-    },
-    {
-      id: 'engineering-programs',
-      title: "Top Engineering Programs at CT University",
-      excerpt: "Explore the engineering programs available at CT University, including B.Tech CSE, AI & Machine Learning, and more with industry partnerships.",
-      author: "Lottie Mukuka",
-      date: "December 15, 2025",
-      readTime: "9 min read",
-      category: "Programs",
-      icon: BookOpen,
-      image: "engineering"
     }
   ]
 
-  const categories = ['All', 'Visa Guide', 'Study Abroad', 'Student Life', 'Travel Tips', 'Scholarship', 'Programs']
+  const categories = ['All', 'Visa Guide', 'Study Abroad', 'Student Life', 'Travel Tips', 'Scholarship']
+
+  const filteredPosts = selectedCategory === 'All' 
+    ? blogPosts 
+    : blogPosts.filter(post => post.category === selectedCategory)
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -86,7 +93,7 @@ const Blog = () => {
           >
             <h1 className="text-5xl font-bold mb-6">Blog & Resources</h1>
             <p className="text-xl text-gray-100 max-w-3xl mx-auto">
-              Your guide to studying in India - visa tips, student life, and everything in between
+              Your complete guide to studying in India - visa tips, student life, Hindi lessons, and everything in between
             </p>
           </motion.div>
         </div>
@@ -99,7 +106,12 @@ const Blog = () => {
             {categories.map((category) => (
               <button
                 key={category}
-                className="px-4 py-2 rounded-full text-sm font-medium transition-all bg-gray-100 text-gray-700 hover:bg-primary-100 hover:text-primary-700"
+                onClick={() => setSelectedCategory(category)}
+                className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
+                  selectedCategory === category
+                    ? 'bg-primary-600 text-white shadow-lg'
+                    : 'bg-gray-100 text-gray-700 hover:bg-primary-100 hover:text-primary-700'
+                }`}
               >
                 {category}
               </button>
@@ -111,8 +123,14 @@ const Blog = () => {
       {/* Blog Grid */}
       <section className="py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="mb-6 text-center">
+            <p className="text-gray-600">
+              Showing <span className="font-bold text-primary-600">{filteredPosts.length}</span> article{filteredPosts.length !== 1 ? 's' : ''}
+            </p>
+          </div>
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {blogPosts.map((post, index) => (
+            {filteredPosts.map((post, index) => (
               <motion.article
                 key={post.id}
                 initial={{ opacity: 0, y: 20 }}
