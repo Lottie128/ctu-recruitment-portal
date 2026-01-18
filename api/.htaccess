@@ -1,0 +1,30 @@
+# Enable Rewrite Engine
+RewriteEngine On
+
+# Allow CORS for API requests
+Header set Access-Control-Allow-Origin "*"
+Header set Access-Control-Allow-Methods "POST, GET, OPTIONS"
+Header set Access-Control-Allow-Headers "Content-Type"
+
+# Security Headers
+Header set X-Content-Type-Options "nosniff"
+Header set X-Frame-Options "DENY"
+Header set X-XSS-Protection "1; mode=block"
+
+# Disable directory browsing
+Options -Indexes
+
+# Protect .htaccess and other sensitive files
+<FilesMatch "^\.(htaccess|htpasswd|env)$">
+    Require all denied
+</FilesMatch>
+
+# Set PHP configurations
+php_value upload_max_filesize 10M
+php_value post_max_size 10M
+php_value max_execution_time 300
+php_value max_input_time 300
+
+# Error handling
+php_flag display_errors Off
+php_flag log_errors On
