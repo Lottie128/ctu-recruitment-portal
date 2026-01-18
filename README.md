@@ -1,184 +1,234 @@
-# CT University Student Recruitment Portal
+# CT University Recruitment Portal
 
-**By ZeroAI Technologies Inc** | Founded by Lottie Mukuka
+A comprehensive web application for Zambian students to apply to CT University in India with exclusive benefits including 50% scholarship, free airport pickup, and complimentary 3-day India tour.
 
-A comprehensive web application for recruiting Zambian students to CT University, India with exclusive 50% tuition scholarships and end-to-end support.
+## Features
 
-## 🌟 Features
+- 🎓 **87+ Programs** - Complete course catalog from CT University and CT Group
+- 💰 **50% Scholarship** - Automatic tuition discount for all Zambian students  
+- ✈️ **Free Airport Pickup** - Complimentary pickup from Delhi/Chandigarh Airport
+- 🗺️ **Free 3-Day Tour** - Choose from Taj Mahal, Manali, Delhi Heritage, or Shimla tours
+- 🏠 **Accommodation Options** - University hostel, near-campus, or in-city living
+- 📧 **Instant Processing** - Offer letter within 30 minutes via email
+- 📱 **Responsive Design** - Optimized for mobile, tablet, and desktop
+- 🎨 **Modern UI/UX** - Built with React, Tailwind CSS, and Framer Motion
 
-- **50% Tuition Fee Scholarship** - Automatic discount on all courses
-- **Fast Processing** - Offer letter in 30 minutes
-- **Quick Acceptance** - Acceptance letter within 24 hours
-- **Free Airport Pickup** - Complimentary pickup and drop-off
-- **Free 3-Day India Tour** - Visit Manali, Taj Mahal, Red Fort
-- **Accommodation Assistance** - Two affordable housing options
-- **End-to-End Support** - Visa applications and flight booking
-- **July 2026 Intake** - Registrations now open
+## Tech Stack
 
-## 🚀 Quick Start
+- **Frontend**: React + Vite, React Router, Tailwind CSS
+- **Animations**: Framer Motion
+- **Forms**: React Hook Form
+- **Icons**: Lucide React
+- **Backend**: PHP (for email processing)
+- **Deployment**: Shared hosting compatible
+
+## Development Setup
 
 ### Prerequisites
-- [Bun](https://bun.sh/) installed on your system
+- Node.js 18+ or Bun
+- PHP 7.4+ (for production API)
 
 ### Installation
 
 ```bash
-# Clone the repository
+# Clone repository
 git clone https://github.com/Lottie128/ctu-recruitment-portal.git
-
-# Navigate to project directory
 cd ctu-recruitment-portal
 
 # Install dependencies
 bun install
+# or
+npm install
+
+# Create environment file
+cp .env.example .env
+
+# Update .env with your configuration
+# Edit VITE_API_URL to point to your API endpoint
 
 # Start development server
 bun run dev
+# or
+npm run dev
 ```
 
-Visit `http://localhost:3000` to view the application.
+The application will be available at `http://localhost:5173`
 
-## 📦 Build for Production
+## Production Deployment
+
+### Build for Production
 
 ```bash
-# Create optimized production build
 bun run build
-
-# Preview production build
-bun run preview
+# or
+npm run build
 ```
 
-## 🏭 Project Structure
+This creates an optimized build in the `dist/` directory.
+
+### Deploy to Shared Hosting
+
+1. **Build the application**:
+   ```bash
+   bun run build
+   ```
+
+2. **Upload files to your hosting**:
+   - Upload everything from `dist/` folder to your public_html (or web root)
+   - Upload `api/` folder to your hosting
+   - Upload root `.htaccess` file
+
+3. **Configure environment**:
+   - Copy `.env.example` to `.env` on server
+   - Update `VITE_API_URL` with your domain
+   - Ensure `api/submit-application.php` has correct email address
+
+4. **Set permissions**:
+   ```bash
+   chmod 755 api/
+   chmod 644 api/*.php
+   chmod 644 .htaccess
+   chmod 644 api/.htaccess
+   ```
+
+5. **Test the application**:
+   - Visit your domain
+   - Submit a test application
+   - Check email delivery
+
+## Email Configuration
+
+The application sends emails to `applications@zeroaitech.tech` when students submit applications.
+
+### PHP Mail Setup
+
+The `api/submit-application.php` file uses PHP's built-in `mail()` function. Most shared hosting providers have this configured by default.
+
+If emails are not being delivered:
+
+1. **Check PHP mail() is enabled** on your hosting
+2. **Verify SPF records** for your domain
+3. **Consider using SMTP** instead (requires PHPMailer library)
+
+### SMTP Alternative (Optional)
+
+For better email deliverability, you can modify `submit-application.php` to use SMTP:
+
+```bash
+composer require phpmailer/phpmailer
+```
+
+Then update the PHP file to use PHPMailer with your SMTP credentials.
+
+## Project Structure
 
 ```
 ctu-recruitment-portal/
 ├── src/
-│   ├── components/     # Reusable UI components
-│   │   ├── Navbar.jsx
-│   │   └── Footer.jsx
-│   ├── pages/          # Page components
-│   │   ├── Home.jsx
-│   │   ├── About.jsx
-│   │   ├── Apply.jsx
-│   │   ├── Blog.jsx
-│   │   └── Contact.jsx
-│   ├── data/           # Course and application data
-│   │   └── coursesData.js
-│   ├── App.jsx         # Main app component
-│   ├── main.jsx        # Entry point
-│   └── index.css       # Global styles
+│   ├── components/      # Reusable components (Navbar, Footer)
+│   ├── pages/          # Page components (Home, Apply, Blog, etc.)
+│   ├── data/           # Course and accommodation data
+│   ├── config/         # API configuration
+│   └── App.jsx         # Main app component with routing
+├── api/
+│   ├── submit-application.php  # Email submission handler
+│   └── .htaccess              # API security config
 ├── public/             # Static assets
-└── package.json        # Project dependencies
+├── .htaccess          # SPA routing configuration
+├── .env.example       # Environment variables template
+└── package.json       # Dependencies
 ```
 
-## 🎯 Key Pages
+## API Endpoints
 
-### Home
-- Hero section with 50% scholarship announcement
-- Feature highlights (airport pickup, tour, visa support)
-- 8-step application process timeline
-- Statistics and testimonials
+### POST /api/submit-application.php
 
-### About
-- ZeroAI Technologies Inc mission and values
-- Leadership profile (Lottie Mukuka)
-- Company timeline and milestones
-- Impact statistics
+Submits a student application and sends emails.
 
-### Apply
-- Complete application form with validation
-- 87 courses across CT University and CT Group
-- Accommodation selection (Near University $150/month, In City $250/month)
-- Programme selection by category
+**Request Body**:
+```json
+{
+  "fullName": "JOHN DOE",
+  "email": "john@example.com",
+  "mobile": "+260123456789",
+  "programme": "B.Tech CSE",
+  "welcomeTour": "taj-mahal",
+  "accommodation": "university-hostel",
+  // ... other form fields
+}
+```
 
-### Blog
-- Study abroad guides
-- Visa application tutorials
-- Student life articles
-- Travel and cultural content
+**Response** (Success):
+```json
+{
+  "success": true,
+  "message": "Application submitted successfully!",
+  "applicationId": "APP-20260118235959"
+}
+```
 
-### Contact
-- Contact form
-- Multiple contact methods
-- FAQs
-- Location map
+**Response** (Error):
+```json
+{
+  "success": false,
+  "message": "Error message here"
+}
+```
 
-## 🎓 Available Programs
+## Environment Variables
 
-**CT University**: 57 programs across 9 categories
-- Engineering & Technology
-- Computer Applications & IT
-- Management Studies
-- Pharmaceutical Sciences
-- Healthcare & Paramedical
-- Law
-- Hotel Management & Tourism
-- Design & Innovation
-- Humanities
+```bash
+# API Configuration
+VITE_API_URL=https://yourdomain.com/api
 
-**CT Group**: 30 programs across 7 categories
-- Diploma Programs
-- Pharmaceutical Sciences
-- Engineering & Technology
-- Healthcare
-- Hotel Management
-- Computer & Business
-- Design & Arts
-- Science & Law
+# Site Configuration  
+VITE_SITE_URL=https://yourdomain.com
+VITE_SITE_NAME=CT University Recruitment Portal
 
-## 💰 Pricing
+# Contact Information
+VITE_CONTACT_EMAIL=applications@zeroaitech.tech
+VITE_CONTACT_PHONE_1=+91-90413-30007
+VITE_CONTACT_PHONE_2=+91-99145-04901
 
-All students receive automatic 50% scholarship:
-- Example: B.Tech CSE: ~~$4,300~~ **$2,150/year**
-- Example: MBA: ~~$3,300~~ **$1,650/year**
-- Example: BBA: ~~$2,800~~ **$1,400/year**
+# Social Media
+VITE_LINKEDIN_URL=https://linkedin.com/in/lottie-mukuka-8b984110a
+VITE_WEBSITE_URL=https://zeroaitech.tech
+```
 
-## 🎓 About ZeroAI Technologies Inc
+## Troubleshooting
 
-ZeroAI Technologies Inc is a Zambian technology company committed to giving back to the community through educational opportunities. Under the leadership of CEO Lottie Mukuka, we provide Zambian students with exclusive access to world-class education in India.
+### Build Issues
+- Clear node_modules and reinstall: `rm -rf node_modules && bun install`
+- Clear Vite cache: `rm -rf node_modules/.vite`
 
-### Our CSR Mission
+### Email Not Sending
+- Check PHP error logs on your server
+- Verify `mail()` function is enabled
+- Test with a simple PHP mail script
+- Check spam folders
 
-This recruitment initiative is not our core business - it's our Corporate Social Responsibility (CSR) program designed to:
-- Make international education accessible to Zambian students
-- Provide substantial financial support (50% scholarships)
-- Offer comprehensive support from application to graduation
-- Build bridges between Zambia and India through education
+### 404 Errors on Refresh
+- Ensure `.htaccess` is uploaded to root
+- Verify Apache `mod_rewrite` is enabled
+- Check hosting supports `.htaccess` files
 
-## 📧 Contact
+### CORS Errors
+- Verify `api/.htaccess` has CORS headers
+- Update `Access-Control-Allow-Origin` in PHP file
+- Check browser console for specific CORS errors
 
-**CT University International Admissions**
-- Email: international.admissions@ctgroup.in
-- Phone: +91-90413-30007 | +91-99145-04901 | +91-98148-80482
-- Address: Ferozepur Road, Ludhiana, Punjab, India
+## Support
 
-**ZeroAI Technologies Inc**
+For issues or questions:
+- Email: applications@zeroaitech.tech
+- Phone: +91-90413-30007 | +91-99145-04901
 - Website: https://zeroaitech.tech
-- LinkedIn: [Lottie Mukuka](https://www.linkedin.com/in/lottie-mukuka-8b984110a)
-- CEO: Lottie Mukuka
 
-## 🛠️ Technologies Used
+## License
 
-- **React 18** - UI library
-- **Vite** - Build tool
-- **Tailwind CSS** - Styling
-- **Framer Motion** - Animations
-- **React Router** - Navigation
-- **React Hook Form** - Form management
-- **Lucide React** - Icons
-- **React Hot Toast** - Notifications
-- **Bun** - Package manager
+Proprietary - © 2026 ZeroAI Technologies. All rights reserved.
 
-## 📝 License
+## Credits
 
-© 2026 ZeroAI Technologies Inc. All rights reserved.
-
-## 🤝 Contributing
-
-This is a CSR initiative by ZeroAI Technologies Inc. For inquiries about partnership or contributions, please contact us through our official channels.
-
----
-
-**Study in India 🇮🇳 | Build Your Future 🎓 | July 2026 Intake Open ✨**
-
-Made with ❤️ by ZeroAI Technologies Inc for Zambian Students
+Developed by **Lottie Mukuka** | ZeroAI Technologies  
+LinkedIn: https://linkedin.com/in/lottie-mukuka-8b984110a

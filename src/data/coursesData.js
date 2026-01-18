@@ -143,20 +143,45 @@ export const ctGroupCourses = {
 
 export const accommodationOptions = [
   {
+    id: "university-hostel",
+    name: "University Hostel",
+    price: 120,
+    includes: [
+      "On-campus accommodation",
+      "Furnished room with bed & study desk",
+      "24/7 security & Wi-Fi",
+      "Common room & recreational facilities",
+      "Laundry facilities"
+    ],
+    note: "Food not included (Mess available at $80/month)",
+    benefits: ["On campus", "Safe & secure", "Student community"]
+  },
+  {
     id: "near-uni",
     name: "Near University",
     price: 150,
-    includes: ["Food", "Accommodation"],
-    excludes: ["Electricity (Government Rates)"],
-    benefits: ["5-10 min walk to campus", "Student community", "Safe environment"]
+    includes: [
+      "Food (3 meals daily)",
+      "Shared accommodation",
+      "Basic furnishing",
+      "Wi-Fi access"
+    ],
+    note: "Electricity charged at government rates",
+    benefits: ["5-10 min walk to campus", "Meals included", "Local experience"]
   },
   {
     id: "in-city",
     name: "In City",
     price: 250,
-    includes: ["Food", "Transport", "Rent"],
-    excludes: ["Electricity (Government Rates)"],
-    benefits: ["City life experience", "Easy access to amenities", "Cultural immersion"]
+    includes: [
+      "Food (3 meals daily)",
+      "Transport to university",
+      "Private/shared room",
+      "All utilities included",
+      "Wi-Fi access"
+    ],
+    note: "Electricity charged at government rates",
+    benefits: ["City life experience", "Transport included", "More independence"]
   }
 ];
 
@@ -206,9 +231,9 @@ export const processSteps = [
   {
     id: 7,
     title: "India Tour",
-    description: "3-day complimentary tour: Manali, Taj Mahal, Red Fort, Himachal",
+    description: "3-day complimentary tour: Choose from Taj Mahal, Manali, Delhi, or Shimla",
     icon: "MapPin",
-    timeline: "Days 1-3"
+    timeline: "Days 2-4"
   },
   {
     id: 8,
