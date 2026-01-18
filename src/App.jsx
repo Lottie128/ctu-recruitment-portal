@@ -1,11 +1,12 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import { Toaster } from 'react-hot-toast'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
 import Home from './pages/Home'
 import About from './pages/About'
 import Apply from './pages/Apply'
-import Contact from './pages/Contact'
 import Blog from './pages/Blog'
+import Contact from './pages/Contact'
 
 function App() {
   return (
@@ -17,11 +18,12 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/about" element={<About />} />
             <Route path="/apply" element={<Apply />} />
-            <Route path="/contact" element={<Contact />} />
             <Route path="/blog" element={<Blog />} />
+            <Route path="/contact" element={<Contact />} />
           </Routes>
         </main>
         <Footer />
+        <Toaster position="top-right" />
       </div>
     </Router>
   )
