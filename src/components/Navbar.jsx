@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { Menu, X, GraduationCap } from 'lucide-react'
-import { motion, AnimatePresence } from 'framer-motion'
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false)
@@ -10,25 +9,26 @@ const Navbar = () => {
   const navLinks = [
     { name: 'Home', path: '/' },
     { name: 'About', path: '/about' },
-    { name: 'Apply Now', path: '/apply', highlight: true },
+    { name: 'Programs', path: '/programs' },
+    { name: 'Apply', path: '/apply' },
     { name: 'Blog', path: '/blog' },
-    { name: 'Contact', path: '/contact' },
+    { name: 'Contact', path: '/contact' }
   ]
 
   const isActive = (path) => location.pathname === path
 
   return (
-    <nav className="bg-white shadow-md sticky top-0 z-50">
+    <nav className="bg-white shadow-lg sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-3 group">
-            <div className="bg-gradient-to-br from-primary-600 to-primary-800 p-2 rounded-lg group-hover:scale-110 transition-transform">
-              <GraduationCap className="w-8 h-8 text-white" />
+            <div className="w-12 h-12 bg-gradient-to-br from-primary-600 to-primary-800 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
+              <GraduationCap className="w-7 h-7 text-white" />
             </div>
             <div>
-              <h1 className="text-xl font-bold text-gray-900">ZeroAI Technologies</h1>
-              <p className="text-xs text-gray-600">CT University Recruitment</p>
+              <div className="text-xl font-bold text-gray-900">CT University</div>
+              <div className="text-xs text-primary-600 font-semibold">ZeroAI Technologies</div>
             </div>
           </Link>
 
@@ -38,12 +38,10 @@ const Navbar = () => {
               <Link
                 key={link.path}
                 to={link.path}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-                  link.highlight
-                    ? 'bg-gradient-to-r from-accent-500 to-accent-600 text-white hover:from-accent-600 hover:to-accent-700 shadow-md hover:shadow-lg'
-                    : isActive(link.path)
-                    ? 'bg-primary-50 text-primary-700'
-                    : 'text-gray-700 hover:bg-gray-100'
+                className={`px-4 py-2 rounded-lg font-medium transition-all ${
+                  isActive(link.path)
+                    ? 'bg-primary-600 text-white'
+                    : 'text-gray-700 hover:bg-primary-50 hover:text-primary-600'
                 }`}
               >
                 {link.name}
@@ -51,10 +49,20 @@ const Navbar = () => {
             ))}
           </div>
 
+          {/* CTA Button */}
+          <div className="hidden md:block">
+            <Link
+              to="/apply"
+              className="bg-accent-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-accent-600 transition-all shadow-lg hover:shadow-xl"
+            >
+              Apply Now
+            </Link>
+          </div>
+
           {/* Mobile menu button */}
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors"
+            className="md:hidden p-2 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors"
           >
             {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
@@ -62,35 +70,33 @@ const Navbar = () => {
       </div>
 
       {/* Mobile Navigation */}
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            className="md:hidden bg-white border-t"
-          >
-            <div className="px-4 py-4 space-y-2">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.path}
-                  to={link.path}
-                  onClick={() => setIsOpen(false)}
-                  className={`block px-4 py-3 rounded-lg text-sm font-medium transition-all ${
-                    link.highlight
-                      ? 'bg-gradient-to-r from-accent-500 to-accent-600 text-white'
-                      : isActive(link.path)
-                      ? 'bg-primary-50 text-primary-700'
-                      : 'text-gray-700 hover:bg-gray-100'
-                  }`}
-                >
-                  {link.name}
-                </Link>
-              ))}
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {isOpen && (
+        <div className="md:hidden bg-white border-t border-gray-200">
+          <div className="px-4 pt-2 pb-4 space-y-2">
+            {navLinks.map((link) => (
+              <Link
+                key={link.path}
+                to={link.path}
+                onClick={() => setIsOpen(false)}
+                className={`block px-4 py-3 rounded-lg font-medium transition-all ${
+                  isActive(link.path)
+                    ? 'bg-primary-600 text-white'
+                    : 'text-gray-700 hover:bg-primary-50'
+                }`}
+              >
+                {link.name}
+              </Link>
+            ))}
+            <Link
+              to="/apply"
+              onClick={() => setIsOpen(false)}
+              className="block w-full bg-accent-500 text-white px-4 py-3 rounded-lg font-semibold text-center hover:bg-accent-600 transition-all"
+            >
+              Apply Now
+            </Link>
+          </div>
+        </div>
+      )}
     </nav>
   )
 }
