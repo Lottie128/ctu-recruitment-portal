@@ -1,10 +1,11 @@
 import { motion } from 'framer-motion'
+import { Link } from 'react-router-dom'
 import { Calendar, Clock, User, ArrowRight, BookOpen, Plane, Heart, FileText } from 'lucide-react'
 
 const Blog = () => {
   const blogPosts = [
     {
-      id: 1,
+      id: 'visa-guide-2026',
       title: "Complete Guide to Student Visa for India 2026",
       excerpt: "Everything you need to know about applying for an Indian student visa from Zambia. Step-by-step process, required documents, and timeline.",
       author: "Lottie Mukuka",
@@ -15,7 +16,7 @@ const Blog = () => {
       image: "visa"
     },
     {
-      id: 2,
+      id: 'why-study-india',
       title: "Why Study in India? 10 Reasons for Zambian Students",
       excerpt: "Discover why India has become the destination of choice for thousands of international students, including affordable education and cultural diversity.",
       author: "Lottie Mukuka",
@@ -26,7 +27,7 @@ const Blog = () => {
       image: "study"
     },
     {
-      id: 3,
+      id: 'student-life',
       title: "Life at CT University: A Student's Perspective",
       excerpt: "Hear from current Zambian students about their experiences at CT University - from campus facilities to social life and academics.",
       author: "Sarah M.",
@@ -37,7 +38,7 @@ const Blog = () => {
       image: "campus"
     },
     {
-      id: 4,
+      id: 'travel-prep',
       title: "How to Prepare for Your Journey to India",
       excerpt: "Essential tips on what to pack, cultural norms to know, and how to make your transition to India smooth and stress-free.",
       author: "Lottie Mukuka",
@@ -48,7 +49,7 @@ const Blog = () => {
       image: "travel"
     },
     {
-      id: 5,
+      id: 'scholarship-info',
       title: "Understanding the 50% Scholarship Program",
       excerpt: "A detailed breakdown of our exclusive scholarship program for Zambian students and how it makes studying in India affordable.",
       author: "Lottie Mukuka",
@@ -59,7 +60,7 @@ const Blog = () => {
       image: "scholarship"
     },
     {
-      id: 6,
+      id: 'engineering-programs',
       title: "Top Engineering Programs at CT University",
       excerpt: "Explore the engineering programs available at CT University, including B.Tech CSE, AI & Machine Learning, and more with industry partnerships.",
       author: "Lottie Mukuka",
@@ -148,10 +149,13 @@ const Blog = () => {
                       <User className="w-4 h-4" />
                       <span>{post.author}</span>
                     </div>
-                    <button className="text-primary-600 hover:text-primary-700 font-semibold text-sm flex items-center space-x-1 group">
+                    <Link 
+                      to={`/blog/${post.id}`}
+                      className="text-primary-600 hover:text-primary-700 font-semibold text-sm flex items-center space-x-1 group"
+                    >
                       <span>Read More</span>
                       <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                    </button>
+                    </Link>
                   </div>
 
                   <div className="flex items-center text-xs text-gray-400 mt-3">
