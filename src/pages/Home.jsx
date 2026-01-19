@@ -1,9 +1,17 @@
 import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
+import { useState, useEffect } from 'react'
 import { GraduationCap, Plane, MapPin, FileText, CreditCard, Calendar, Car, CheckCircle, ArrowRight, Users, Award, Globe, Heart } from 'lucide-react'
 import { processSteps } from '../data/coursesData'
 
 const Home = () => {
+  const [testimonials, setTestimonials] = useState([])
+
+  useEffect(() => {
+    const savedTestimonials = JSON.parse(localStorage.getItem('testimonials') || '[]')
+    setTestimonials(savedTestimonials)
+  }, [])
+
   const iconMap = {
     FileText, Mail: FileText, CreditCard, Plane, Calendar, Car, MapPin, GraduationCap
   }
@@ -49,7 +57,7 @@ const Home = () => {
     { value: "30min", label: "Offer Letter Time", icon: CheckCircle }
   ]
 
-  const testimonials = [
+  const defaultTestimonials = [
     {
       name: "Sarah M.",
       course: "B.Tech Computer Science",
@@ -69,6 +77,8 @@ const Home = () => {
       year: "2025 Intake"
     }
   ]
+
+  const displayTestimonials = testimonials.length > 0 ? testimonials : defaultTestimonials
 
   return (
     <div className="min-h-screen">
@@ -236,7 +246,7 @@ const Home = () => {
                   </div>
                 </motion.div>
               )
-            })}}
+            })}
           </div>
         </div>
       </section>
@@ -250,7 +260,7 @@ const Home = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {testimonials.map((testimonial, index) => (
+            {displayTestimonials.slice(0, 3).map((testimonial, index) => (
               <motion.div
                 key={index}
                 initial={{ opacity: 0, y: 20 }}
@@ -259,15 +269,21 @@ const Home = () => {
                 viewport={{ once: true }}
                 className="bg-white p-8 rounded-xl shadow-lg"
               >
-                <div className="text-4xl text-primary-600 mb-4">"</div>
-                <p className="text-gray-700 mb-6 italic">{testimonial.quote}</p>
-                <div className="flex items-center justify-between pt-4 border-t border-gray-200">
+                <div className="flex items-center mb-6">
+                  {testimonial.image ? (
+                    <img src={testimonial.image} alt={testimonial.name} className="w-16 h-16 rounded-full object-cover mr-4" />
+                  ) : (
+                    <div className="w-16 h-16 rounded-full bg-primary-600 flex items-center justify-center text-white font-bold text-xl mr-4">
+                      {testimonial.name.split(' ').map(n => n[0]).join('').substring(0, 2)}
+                    </div>
+                  )}
                   <div>
                     <div className="font-bold text-gray-900">{testimonial.name}</div>
-                    <div className="text-sm text-gray-600">{testimonial.course}</div>
+                    <div className="text-sm text-gray-600">{testimonial.program || testimonial.course}</div>
+                    {testimonial.year && <div className="text-xs text-gray-500">{testimonial.year}</div>}
                   </div>
-                  <div className="text-xs text-primary-600 font-semibold">{testimonial.year}</div>
                 </div>
+                <p className="text-gray-700 italic">"{testimonial.text || testimonial.quote}"</p>
               </motion.div>
             ))}
           </div>
