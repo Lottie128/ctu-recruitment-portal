@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react'
 import { useAuth } from '../../contexts/AuthContext'
 import { useNavigate } from 'react-router-dom'
-import { LogOut, Plus, Edit2, Trash2, Save, X } from 'lucide-react'
+import { LogOut, Plus, Edit2, Trash2, Save, X, Database } from 'lucide-react'
 import toast from 'react-hot-toast'
+import { seedBlogs, seedTestimonials } from '../../utils/seedData'
 
 const AdminDashboard = () => {
   const { logout } = useAuth()
@@ -24,6 +25,16 @@ const AdminDashboard = () => {
     logout()
     navigate('/admin/login')
     toast.success('Logged out successfully')
+  }
+
+  const loadSeedData = () => {
+    if (window.confirm('This will load 5 real blog posts and 4 testimonials. Continue?')) {
+      localStorage.setItem('blogs', JSON.stringify(seedBlogs))
+      localStorage.setItem('testimonials', JSON.stringify(seedTestimonials))
+      setBlogs(seedBlogs)
+      setTestimonials(seedTestimonials)
+      toast.success('Seed data loaded successfully! 🎉')
+    }
   }
 
   // Blog functions
@@ -95,10 +106,16 @@ const AdminDashboard = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
             <h1 className="text-2xl font-bold text-gray-900">Admin Dashboard</h1>
-            <button onClick={handleLogout} className="flex items-center space-x-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700">
-              <LogOut className="w-4 h-4" />
-              <span>Logout</span>
-            </button>
+            <div className="flex items-center space-x-4">
+              <button onClick={loadSeedData} className="flex items-center space-x-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
+                <Database className="w-4 h-4" />
+                <span>Load Sample Data</span>
+              </button>
+              <button onClick={handleLogout} className="flex items-center space-x-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700">
+                <LogOut className="w-4 h-4" />
+                <span>Logout</span>
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -107,10 +124,10 @@ const AdminDashboard = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="flex space-x-4 mb-8">
           <button onClick={() => setActiveTab('blogs')} className={`px-6 py-3 rounded-lg font-semibold ${activeTab === 'blogs' ? 'bg-primary-600 text-white' : 'bg-white text-gray-700'}`}>
-            Blogs
+            Blogs ({blogs.length})
           </button>
           <button onClick={() => setActiveTab('testimonials')} className={`px-6 py-3 rounded-lg font-semibold ${activeTab === 'testimonials' ? 'bg-primary-600 text-white' : 'bg-white text-gray-700'}`}>
-            Testimonials
+            Testimonials ({testimonials.length})
           </button>
         </div>
 
@@ -139,10 +156,12 @@ const AdminDashboard = () => {
                     <option>Student Life</option>
                     <option>Admissions</option>
                     <option>Travel Tips</option>
-                    <option>Academics</option>
+                    <option>Visa Guide</option>
+                    <option>Study Abroad</option>
+                    <option>Scholarship</option>
                   </select>
-                  <textarea placeholder="Excerpt" value={editingBlog.excerpt || ''} onChange={(e) => setEditingBlog({...editingBlog, excerpt: e.target.value})} className="w-full px-4 py-3 border rounded-lg" rows="2" />
-                  <textarea placeholder="Content" value={editingBlog.content || ''} onChange={(e) => setEditingBlog({...editingBlog, content: e.target.value})} className="w-full px-4 py-3 border rounded-lg" rows="10" />
+                  <textarea placeholder="Excerpt (short summary)" value={editingBlog.excerpt || ''} onChange={(e) => setEditingBlog({...editingBlog, excerpt: e.target.value})} className="w-full px-4 py-3 border rounded-lg" rows="2" />
+                  <textarea placeholder="Content (full blog post)" value={editingBlog.content || ''} onChange={(e) => setEditingBlog({...editingBlog, content: e.target.value})} className="w-full px-4 py-3 border rounded-lg" rows="10" />
                   <button onClick={saveBlog} className="flex items-center space-x-2 px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700">
                     <Save className="w-5 h-5" />
                     <span>Save Blog</span>
@@ -154,7 +173,7 @@ const AdminDashboard = () => {
             <div className="grid gap-4">
               {blogs.map(blog => (
                 <div key={blog.id} className="bg-white rounded-lg shadow p-6 flex items-center justify-between">
-                  <div>
+                  <div className="flex-1">
                     <h3 className="font-bold text-lg">{blog.title}</h3>
                     <p className="text-sm text-gray-600">{blog.category}</p>
                   </div>
@@ -192,9 +211,9 @@ const AdminDashboard = () => {
                 </div>
                 <div className="space-y-4">
                   <input type="text" placeholder="Student Name" value={editingTestimonial.name || ''} onChange={(e) => setEditingTestimonial({...editingTestimonial, name: e.target.value})} className="w-full px-4 py-3 border rounded-lg" />
-                  <input type="text" placeholder="Program" value={editingTestimonial.program || ''} onChange={(e) => setEditingTestimonial({...editingTestimonial, program: e.target.value})} className="w-full px-4 py-3 border rounded-lg" />
-                  <input type="text" placeholder="Year" value={editingTestimonial.year || ''} onChange={(e) => setEditingTestimonial({...editingTestimonial, year: e.target.value})} className="w-full px-4 py-3 border rounded-lg" />
-                  <input type="text" placeholder="Image URL (optional)" value={editingTestimonial.image || ''} onChange={(e) => setEditingTestimonial({...editingTestimonial, image: e.target.value})} className="w-full px-4 py-3 border rounded-lg" />
+                  <input type="text" placeholder="Program (e.g., B.Tech Computer Science)" value={editingTestimonial.program || ''} onChange={(e) => setEditingTestimonial({...editingTestimonial, program: e.target.value})} className="w-full px-4 py-3 border rounded-lg" />
+                  <input type="text" placeholder="Year (e.g., 2024)" value={editingTestimonial.year || ''} onChange={(e) => setEditingTestimonial({...editingTestimonial, year: e.target.value})} className="w-full px-4 py-3 border rounded-lg" />
+                  <input type="text" placeholder="Image URL (leave empty for initials avatar)" value={editingTestimonial.image || ''} onChange={(e) => setEditingTestimonial({...editingTestimonial, image: e.target.value})} className="w-full px-4 py-3 border rounded-lg" />
                   <textarea placeholder="Testimonial Text" value={editingTestimonial.text || ''} onChange={(e) => setEditingTestimonial({...editingTestimonial, text: e.target.value})} className="w-full px-4 py-3 border rounded-lg" rows="4" />
                   <button onClick={saveTestimonial} className="flex items-center space-x-2 px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700">
                     <Save className="w-5 h-5" />
@@ -207,9 +226,18 @@ const AdminDashboard = () => {
             <div className="grid gap-4">
               {testimonials.map(testimonial => (
                 <div key={testimonial.id} className="bg-white rounded-lg shadow p-6 flex items-center justify-between">
-                  <div>
-                    <h3 className="font-bold text-lg">{testimonial.name}</h3>
-                    <p className="text-sm text-gray-600">{testimonial.program} - Class of {testimonial.year}</p>
+                  <div className="flex items-center space-x-4 flex-1">
+                    {testimonial.image ? (
+                      <img src={testimonial.image} alt={testimonial.name} className="w-12 h-12 rounded-full object-cover" />
+                    ) : (
+                      <div className="w-12 h-12 rounded-full bg-primary-600 flex items-center justify-center text-white font-bold">
+                        {testimonial.name.split(' ').map(n => n[0]).join('').substring(0, 2)}
+                      </div>
+                    )}
+                    <div>
+                      <h3 className="font-bold text-lg">{testimonial.name}</h3>
+                      <p className="text-sm text-gray-600">{testimonial.program} - Class of {testimonial.year}</p>
+                    </div>
                   </div>
                   <div className="flex space-x-2">
                     <button onClick={() => setEditingTestimonial(testimonial)} className="p-2 text-blue-600 hover:bg-blue-50 rounded">
