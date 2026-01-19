@@ -15,9 +15,10 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit();
 }
 
-$input = json_decode(file_get_contents('php://input'), true);
+// Get form data from $_POST
+$data = $_POST;
 
-if (empty($input)) {
+if (empty($data)) {
     http_response_code(400);
     echo json_encode(['success' => false, 'message' => 'No data received']);
     exit();
@@ -25,8 +26,42 @@ if (empty($input)) {
 
 // Email configuration
 $adminEmail = 'applications@zeroaitech.tech';
-$applicantEmail = $input['email'] ?? '';
-$applicantName = $input['fullName'] ?? 'Applicant';
+$applicantEmail = $data['email'] ?? '';
+$applicantName = $data['fullName'] ?? 'Applicant';
+
+// Handle file attachments
+$attachments = [];
+
+// Process passport photo
+if (isset($_FILES['passportPhoto']) && $_FILES['passportPhoto']['error'] === UPLOAD_ERR_OK) {
+    $attachments[] = [
+        'path' => $_FILES['passportPhoto']['tmp_name'],
+        'name' => $_FILES['passportPhoto']['name'],
+        'type' => $_FILES['passportPhoto']['type']
+    ];
+}
+
+// Process certificates (multiple files)
+if (isset($_FILES['certificates'])) {
+    $certFiles = $_FILES['certificates'];
+    if (is_array($certFiles['tmp_name'])) {
+        for ($i = 0; $i < count($certFiles['tmp_name']); $i++) {
+            if ($certFiles['error'][$i] === UPLOAD_ERR_OK) {
+                $attachments[] = [
+                    'path' => $certFiles['tmp_name'][$i],
+                    'name' => $certFiles['name'][$i],
+                    'type' => $certFiles['type'][$i]
+                ];
+            }
+        }
+    } elseif ($certFiles['error'] === UPLOAD_ERR_OK) {
+        $attachments[] = [
+            'path' => $certFiles['tmp_name'],
+            'name' => $certFiles['name'],
+            'type' => $certFiles['type']
+        ];
+    }
+}
 
 // Create beautifully formatted email for admin
 $adminSubject = '🎓 New CT University Application - ' . $applicantName;
@@ -43,6 +78,7 @@ $adminMessage = "
     .field-label { font-weight: bold; color: #4b5563; display: inline-block; min-width: 180px; }
     .field-value { color: #111827; }
     .highlight { background: #fef3c7; padding: 15px; border-left: 4px solid #f59e0b; margin: 20px 0; }
+    .attachments { background: #dbeafe; padding: 15px; border-left: 4px solid #3b82f6; margin: 20px 0; }
     .footer { text-align: center; padding: 20px; color: #6b7280; font-size: 12px; }
 </style>
 </head>
@@ -56,39 +92,51 @@ $adminMessage = "
         <strong>⚡ Action Required:</strong> Please process this application and send offer letter within 30 minutes.
     </div>
     
+    <div class='attachments'>
+        <strong>📎 Attachments:</strong> " . count($attachments) . " file(s) attached to this email
+        <ul>
+";
+
+foreach ($attachments as $attachment) {
+    $adminMessage .= "            <li>" . htmlspecialchars($attachment['name']) . "</li>\n";
+}
+
+$adminMessage .= "
+        </ul>
+    </div>
+    
     <div class='section'>
         <div class='section-title'>👤 Personal Information</div>
-        <div class='field'><span class='field-label'>Full Name:</span> <span class='field-value'>{$input['fullName']}</span></div>
-        <div class='field'><span class='field-label'>Date of Birth:</span> <span class='field-value'>{$input['dob']}</span></div>
-        <div class='field'><span class='field-label'>Gender:</span> <span class='field-value'>{$input['gender']}</span></div>
-        <div class='field'><span class='field-label'>Nationality:</span> <span class='field-value'>{$input['nationality']}</span></div>
-        <div class='field'><span class='field-label'>Passport Number:</span> <span class='field-value'>{$input['passportNo']}</span></div>
+        <div class='field'><span class='field-label'>Full Name:</span> <span class='field-value'>{$data['fullName']}</span></div>
+        <div class='field'><span class='field-label'>Date of Birth:</span> <span class='field-value'>{$data['dob']}</span></div>
+        <div class='field'><span class='field-label'>Gender:</span> <span class='field-value'>{$data['gender']}</span></div>
+        <div class='field'><span class='field-label'>Nationality:</span> <span class='field-value'>{$data['nationality']}</span></div>
+        <div class='field'><span class='field-label'>Passport Number:</span> <span class='field-value'>{$data['passportNo']}</span></div>
     </div>
     
     <div class='section'>
         <div class='section-title'>📞 Contact Information</div>
-        <div class='field'><span class='field-label'>Email:</span> <span class='field-value'>{$input['email']}</span></div>
-        <div class='field'><span class='field-label'>Mobile:</span> <span class='field-value'>{$input['mobile']}</span></div>
-        <div class='field'><span class='field-label'>WhatsApp:</span> <span class='field-value'>{$input['whatsapp']}</span></div>
+        <div class='field'><span class='field-label'>Email:</span> <span class='field-value'>{$data['email']}</span></div>
+        <div class='field'><span class='field-label'>Mobile:</span> <span class='field-value'>{$data['mobile']}</span></div>
+        <div class='field'><span class='field-label'>WhatsApp:</span> <span class='field-value'>{$data['whatsapp']}</span></div>
     </div>
     
     <div class='section'>
         <div class='section-title'>🎓 Educational Background</div>
-        <div class='field'><span class='field-label'>Qualification Level:</span> <span class='field-value'>{$input['qualificationLevel']}</span></div>
-        <div class='field'><span class='field-label'>Year of Completion:</span> <span class='field-value'>{$input['yearOfCompletion']}</span></div>
+        <div class='field'><span class='field-label'>Qualification Level:</span> <span class='field-value'>{$data['qualificationLevel']}</span></div>
+        <div class='field'><span class='field-label'>Year of Completion:</span> <span class='field-value'>{$data['yearOfCompletion']}</span></div>
     </div>
     
     <div class='section'>
         <div class='section-title'>🏫 Programme Selection</div>
-        <div class='field'><span class='field-label'>Institution:</span> <span class='field-value'>" . ($input['category'] ? 'Selected' : 'N/A') . "</span></div>
-        <div class='field'><span class='field-label'>Category:</span> <span class='field-value'>{$input['category']}</span></div>
-        <div class='field'><span class='field-label'>Programme:</span> <span class='field-value'>{$input['programme']}</span></div>
+        <div class='field'><span class='field-label'>Category:</span> <span class='field-value'>{$data['category']}</span></div>
+        <div class='field'><span class='field-label'>Programme:</span> <span class='field-value'>{$data['programme']}</span></div>
     </div>
     
     <div class='section'>
         <div class='section-title'>🏝️ Welcome Package</div>
-        <div class='field'><span class='field-label'>Selected Tour:</span> <span class='field-value'>{$input['welcomeTour']}</span></div>
-        <div class='field'><span class='field-label'>Accommodation:</span> <span class='field-value'>{$input['accommodation']}</span></div>
+        <div class='field'><span class='field-label'>Selected Tour:</span> <span class='field-value'>{$data['welcomeTour']}</span></div>
+        <div class='field'><span class='field-label'>Accommodation:</span> <span class='field-value'>{$data['accommodation']}</span></div>
     </div>
 </div>
 <div class='footer'>
@@ -126,22 +174,23 @@ $applicantMessage = "
     <div class='success-box'>
         <h2 style='margin-top:0; color: #10b981;'>✅ Application Successfully Submitted!</h2>
         <p><strong>Dear {$applicantName},</strong></p>
-        <p>Thank you for applying to CT University through ZeroAI Technologies. We have successfully received your application.</p>
+        <p>Thank you for applying to CT University through ZeroAI Technologies. We have successfully received your application with all attachments.</p>
     </div>
     
     <div class='info-box'>
         <h3 style='color: #1e3a8a;'>📄 Application Summary</h3>
-        <p><strong>Programme:</strong> {$input['programme']}</p>
-        <p><strong>Welcome Tour:</strong> {$input['welcomeTour']}</p>
-        <p><strong>Accommodation:</strong> {$input['accommodation']}</p>
+        <p><strong>Programme:</strong> {$data['programme']}</p>
+        <p><strong>Welcome Tour:</strong> {$data['welcomeTour']}</p>
+        <p><strong>Accommodation:</strong> {$data['accommodation']}</p>
+        <p><strong>Documents Received:</strong> " . count($attachments) . " file(s)</p>
     </div>
     
     <div class='next-steps'>
         <h3 style='color: #1e3a8a;'>🚀 What Happens Next?</h3>
         <div class='step'>You will receive your <strong>Offer Letter within 30 minutes</strong> via email</div>
-        <div class='step'>Our team will contact you on WhatsApp (<strong>{$input['whatsapp']}</strong>) to guide you through the next steps</div>
+        <div class='step'>Our team will contact you on WhatsApp (<strong>{$data['whatsapp']}</strong>) to guide you through the next steps</div>
         <div class='step'>We'll assist you with visa application, flight booking, and accommodation setup</div>
-        <div class='step'>Get ready for your <strong>FREE 3-day {$input['welcomeTour']}</strong>!</div>
+        <div class='step'>Get ready for your <strong>FREE 3-day {$data['welcomeTour']}</strong>!</div>
     </div>
     
     <div style='text-align: center; margin: 30px 0;'>
@@ -160,17 +209,43 @@ $applicantMessage = "
 </html>
 ";
 
-// Email headers
-$headers = "MIME-Version: 1.0\r\n";
-$headers .= "Content-type: text/html; charset=UTF-8\r\n";
-$headers .= "From: CT University Portal <noreply@zeroaitech.tech>\r\n";
-$headers .= "Reply-To: lottiemukuka@zeroaitech.tech\r\n";
+// Function to send email with attachments
+function sendEmailWithAttachments($to, $subject, $htmlMessage, $attachments = []) {
+    $separator = md5(time());
+    
+    $headers = "From: CT University Portal <noreply@zeroaitech.tech>\r\n";
+    $headers .= "Reply-To: lottiemukuka@zeroaitech.tech\r\n";
+    $headers .= "MIME-Version: 1.0\r\n";
+    $headers .= "Content-Type: multipart/mixed; boundary=\"" . $separator . "\"\r\n";
+    
+    $body = "--" . $separator . "\r\n";
+    $body .= "Content-Type: text/html; charset=UTF-8\r\n";
+    $body .= "Content-Transfer-Encoding: 7bit\r\n\r\n";
+    $body .= $htmlMessage . "\r\n";
+    
+    // Add attachments
+    foreach ($attachments as $attachment) {
+        if (file_exists($attachment['path'])) {
+            $file_content = chunk_split(base64_encode(file_get_contents($attachment['path'])));
+            
+            $body .= "--" . $separator . "\r\n";
+            $body .= "Content-Type: " . $attachment['type'] . "; name=\"" . $attachment['name'] . "\"\r\n";
+            $body .= "Content-Transfer-Encoding: base64\r\n";
+            $body .= "Content-Disposition: attachment; filename=\"" . $attachment['name'] . "\"\r\n\r\n";
+            $body .= $file_content . "\r\n";
+        }
+    }
+    
+    $body .= "--" . $separator . "--";
+    
+    return mail($to, $subject, $body, $headers);
+}
 
-// Send email to admin
-$adminSent = mail($adminEmail, $adminSubject, $adminMessage, $headers);
+// Send email to admin with attachments
+$adminSent = sendEmailWithAttachments($adminEmail, $adminSubject, $adminMessage, $attachments);
 
-// Send confirmation email to applicant
-$applicantSent = mail($applicantEmail, $applicantSubject, $applicantMessage, $headers);
+// Send confirmation email to applicant (no attachments)
+$applicantSent = sendEmailWithAttachments($applicantEmail, $applicantSubject, $applicantMessage, []);
 
 if ($adminSent && $applicantSent) {
     echo json_encode([
