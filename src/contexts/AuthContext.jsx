@@ -11,38 +11,32 @@ export const useAuth = () => {
 }
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null)
-  const [loading, setLoading] = useState(true)
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    // Check if user is logged in (from localStorage)
-    const savedUser = localStorage.getItem('admin_user')
-    if (savedUser) {
-      setUser(JSON.parse(savedUser))
-    }
-    setLoading(false)
+    const authStatus = localStorage.getItem('adminAuthenticated')
+    setIsAuthenticated(authStatus === 'true')
+    setIsLoading(false)
   }, [])
 
   const login = (email) => {
-    const userData = { email, loginTime: new Date().toISOString() }
-    setUser(userData)
-    localStorage.setItem('admin_user', JSON.stringify(userData))
+    if (email === 'lottiemukuka@zeroaitech.tech') {
+      localStorage.setItem('adminAuthenticated', 'true')
+      setIsAuthenticated(true)
+      return true
+    }
+    return false
   }
 
   const logout = () => {
-    setUser(null)
-    localStorage.removeItem('admin_user')
+    localStorage.removeItem('adminAuthenticated')
+    setIsAuthenticated(false)
   }
 
-  const value = {
-    user,
-    loading,
-    login,
-    logout,
-    isAuthenticated: !!user
-  }
-
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
+  return (
+    <AuthContext.Provider value={{ isAuthenticated, isLoading, login, logout }}>
+      {children}
+    </AuthContext.Provider>
+  )
 }
-
-export default AuthContext

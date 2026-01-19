@@ -1,57 +1,24 @@
 import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { motion } from 'framer-motion'
-import { BookOpen, Edit, Trash2, Plus, LogOut, Image, Save } from 'lucide-react'
 import { useAuth } from '../../contexts/AuthContext'
+import { useNavigate } from 'react-router-dom'
+import { LogOut, Plus, Edit2, Trash2, Save, X } from 'lucide-react'
 import toast from 'react-hot-toast'
 
 const AdminDashboard = () => {
-  const { user, logout } = useAuth()
+  const { logout } = useAuth()
   const navigate = useNavigate()
+  const [activeTab, setActiveTab] = useState('blogs')
   const [blogs, setBlogs] = useState([])
+  const [testimonials, setTestimonials] = useState([])
   const [editingBlog, setEditingBlog] = useState(null)
-  const [showEditor, setShowEditor] = useState(false)
+  const [editingTestimonial, setEditingTestimonial] = useState(null)
 
   useEffect(() => {
-    // Load blogs from localStorage
-    const savedBlogs = localStorage.getItem('admin_blogs')
-    if (savedBlogs) {
-      setBlogs(JSON.parse(savedBlogs))
-    } else {
-      // Initialize with default blogs
-      const defaultBlogs = [
-        {
-          id: 'visa-guide-2026',
-          title: 'Complete Guide to Student Visa for India 2026',
-          excerpt: 'Everything you need to know about applying for an Indian student visa from Zambia.',
-          category: 'Visa Guide',
-          author: 'Lottie Mukuka',
-          date: 'January 15, 2026',
-          readTime: '8 min read',
-          coverImage: 'https://images.unsplash.com/photo-1578575437130-527eed3abbec?w=800',
-          content: '<h2>Introduction</h2><p>Applying for an Indian student visa from Zambia is straightforward when you have the right guidance...</p>'
-        },
-        {
-          id: 'why-study-india',
-          title: 'Why Study in India? 10 Reasons for Zambian Students',
-          excerpt: 'Discover why India has become the destination of choice for thousands of international students.',
-          category: 'Study Abroad',
-          author: 'Lottie Mukuka',
-          date: 'January 10, 2026',
-          readTime: '6 min read',
-          coverImage: 'https://images.unsplash.com/photo-1524492412937-b28074a5d7da?w=800',
-          content: '<h2>Why India is Perfect for Zambian Students</h2><p>India has emerged as a leading destination...</p>'
-        }
-      ]
-      setBlogs(defaultBlogs)
-      localStorage.setItem('admin_blogs', JSON.stringify(defaultBlogs))
-    }
+    const savedBlogs = JSON.parse(localStorage.getItem('blogs') || '[]')
+    const savedTestimonials = JSON.parse(localStorage.getItem('testimonials') || '[]')
+    setBlogs(savedBlogs)
+    setTestimonials(savedTestimonials)
   }, [])
-
-  const saveBlogs = (updatedBlogs) => {
-    setBlogs(updatedBlogs)
-    localStorage.setItem('admin_blogs', JSON.stringify(updatedBlogs))
-  }
 
   const handleLogout = () => {
     logout()
@@ -59,49 +26,65 @@ const AdminDashboard = () => {
     toast.success('Logged out successfully')
   }
 
-  const handleCreateBlog = () => {
-    const newBlog = {
-      id: `blog-${Date.now()}`,
-      title: 'New Blog Post',
-      excerpt: 'Click edit to add content',
-      category: 'General',
-      author: user.email.split('@')[0],
-      date: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }),
-      readTime: '5 min read',
-      coverImage: 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=800',
-      content: '<p>Start writing your blog content here...</p>'
+  // Blog functions
+  const saveBlog = () => {
+    if (!editingBlog.title || !editingBlog.content) {
+      toast.error('Please fill all fields')
+      return
     }
-    setEditingBlog(newBlog)
-    setShowEditor(true)
-  }
 
-  const handleEditBlog = (blog) => {
-    setEditingBlog({ ...blog })
-    setShowEditor(true)
-  }
-
-  const handleSaveBlog = () => {
-    const existingIndex = blogs.findIndex(b => b.id === editingBlog.id)
     let updatedBlogs
-    
-    if (existingIndex >= 0) {
-      updatedBlogs = [...blogs]
-      updatedBlogs[existingIndex] = editingBlog
+    if (editingBlog.id) {
+      updatedBlogs = blogs.map(b => b.id === editingBlog.id ? editingBlog : b)
+      toast.success('Blog updated successfully!')
     } else {
-      updatedBlogs = [...blogs, editingBlog]
+      const newBlog = { ...editingBlog, id: Date.now(), date: new Date().toISOString() }
+      updatedBlogs = [...blogs, newBlog]
+      toast.success('Blog created successfully!')
     }
-    
-    saveBlogs(updatedBlogs)
-    setShowEditor(false)
+
+    setBlogs(updatedBlogs)
+    localStorage.setItem('blogs', JSON.stringify(updatedBlogs))
     setEditingBlog(null)
-    toast.success('Blog saved successfully!')
   }
 
-  const handleDeleteBlog = (blogId) => {
-    if (confirm('Are you sure you want to delete this blog post?')) {
-      const updatedBlogs = blogs.filter(b => b.id !== blogId)
-      saveBlogs(updatedBlogs)
-      toast.success('Blog deleted successfully')
+  const deleteBlog = (id) => {
+    if (window.confirm('Delete this blog?')) {
+      const updatedBlogs = blogs.filter(b => b.id !== id)
+      setBlogs(updatedBlogs)
+      localStorage.setItem('blogs', JSON.stringify(updatedBlogs))
+      toast.success('Blog deleted!')
+    }
+  }
+
+  // Testimonial functions
+  const saveTestimonial = () => {
+    if (!editingTestimonial.name || !editingTestimonial.text) {
+      toast.error('Please fill all fields')
+      return
+    }
+
+    let updatedTestimonials
+    if (editingTestimonial.id) {
+      updatedTestimonials = testimonials.map(t => t.id === editingTestimonial.id ? editingTestimonial : t)
+      toast.success('Testimonial updated!')
+    } else {
+      const newTestimonial = { ...editingTestimonial, id: Date.now() }
+      updatedTestimonials = [...testimonials, newTestimonial]
+      toast.success('Testimonial created!')
+    }
+
+    setTestimonials(updatedTestimonials)
+    localStorage.setItem('testimonials', JSON.stringify(updatedTestimonials))
+    setEditingTestimonial(null)
+  }
+
+  const deleteTestimonial = (id) => {
+    if (window.confirm('Delete this testimonial?')) {
+      const updatedTestimonials = testimonials.filter(t => t.id !== id)
+      setTestimonials(updatedTestimonials)
+      localStorage.setItem('testimonials', JSON.stringify(updatedTestimonials))
+      toast.success('Testimonial deleted!')
     }
   }
 
@@ -110,15 +93,9 @@ const AdminDashboard = () => {
       {/* Header */}
       <div className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex justify-between items-center">
-            <div>
-              <h1 className="text-2xl font-bold text-gray-900">Admin Dashboard</h1>
-              <p className="text-sm text-gray-600">Logged in as {user?.email}</p>
-            </div>
-            <button
-              onClick={handleLogout}
-              className="flex items-center space-x-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
-            >
+          <div className="flex items-center justify-between">
+            <h1 className="text-2xl font-bold text-gray-900">Admin Dashboard</h1>
+            <button onClick={handleLogout} className="flex items-center space-x-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700">
               <LogOut className="w-4 h-4" />
               <span>Logout</span>
             </button>
@@ -126,168 +103,124 @@ const AdminDashboard = () => {
         </div>
       </div>
 
+      {/* Tabs */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {!showEditor ? (
-          <>
-            {/* Create Button */}
+        <div className="flex space-x-4 mb-8">
+          <button onClick={() => setActiveTab('blogs')} className={`px-6 py-3 rounded-lg font-semibold ${activeTab === 'blogs' ? 'bg-primary-600 text-white' : 'bg-white text-gray-700'}`}>
+            Blogs
+          </button>
+          <button onClick={() => setActiveTab('testimonials')} className={`px-6 py-3 rounded-lg font-semibold ${activeTab === 'testimonials' ? 'bg-primary-600 text-white' : 'bg-white text-gray-700'}`}>
+            Testimonials
+          </button>
+        </div>
+
+        {/* Blogs Tab */}
+        {activeTab === 'blogs' && (
+          <div>
             <div className="mb-6">
-              <button
-                onClick={handleCreateBlog}
-                className="flex items-center space-x-2 px-6 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
-              >
+              <button onClick={() => setEditingBlog({ title: '', excerpt: '', content: '', coverImage: '', category: 'Student Life' })} className="flex items-center space-x-2 px-6 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700">
                 <Plus className="w-5 h-5" />
-                <span>Create New Blog Post</span>
+                <span>New Blog Post</span>
               </button>
             </div>
 
-            {/* Blogs List */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {blogs.map((blog) => (
-                <motion.div
-                  key={blog.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="bg-white rounded-xl shadow-lg overflow-hidden"
-                >
-                  <img
-                    src={blog.coverImage}
-                    alt={blog.title}
-                    className="w-full h-48 object-cover"
-                  />
-                  <div className="p-6">
-                    <div className="flex items-center justify-between mb-3">
-                      <span className="px-3 py-1 bg-primary-100 text-primary-700 rounded-full text-xs font-semibold">
-                        {blog.category}
-                      </span>
-                      <span className="text-xs text-gray-500">{blog.readTime}</span>
-                    </div>
-                    <h3 className="text-lg font-bold text-gray-900 mb-2">{blog.title}</h3>
-                    <p className="text-gray-600 text-sm mb-4 line-clamp-2">{blog.excerpt}</p>
-                    <div className="flex items-center justify-between">
-                      <button
-                        onClick={() => handleEditBlog(blog)}
-                        className="flex items-center space-x-1 text-primary-600 hover:text-primary-700 font-medium text-sm"
-                      >
-                        <Edit className="w-4 h-4" />
-                        <span>Edit</span>
-                      </button>
-                      <button
-                        onClick={() => handleDeleteBlog(blog.id)}
-                        className="flex items-center space-x-1 text-red-600 hover:text-red-700 font-medium text-sm"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                        <span>Delete</span>
-                      </button>
-                    </div>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          </>
-        ) : (
-          /* Blog Editor */
-          <div className="bg-white rounded-xl shadow-lg p-8">
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-bold text-gray-900">Edit Blog Post</h2>
-              <div className="flex space-x-3">
-                <button
-                  onClick={() => {
-                    setShowEditor(false)
-                    setEditingBlog(null)
-                  }}
-                  className="px-4 py-2 text-gray-600 hover:text-gray-800 font-medium"
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={handleSaveBlog}
-                  className="flex items-center space-x-2 px-6 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700"
-                >
-                  <Save className="w-4 h-4" />
-                  <span>Save Changes</span>
-                </button>
-              </div>
-            </div>
-
-            <div className="space-y-6">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Title</label>
-                <input
-                  type="text"
-                  value={editingBlog.title}
-                  onChange={(e) => setEditingBlog({ ...editingBlog, title: e.target.value })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Excerpt</label>
-                <textarea
-                  value={editingBlog.excerpt}
-                  onChange={(e) => setEditingBlog({ ...editingBlog, excerpt: e.target.value })}
-                  rows={3}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Category</label>
-                  <input
-                    type="text"
-                    value={editingBlog.category}
-                    onChange={(e) => setEditingBlog({ ...editingBlog, category: e.target.value })}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Read Time</label>
-                  <input
-                    type="text"
-                    value={editingBlog.readTime}
-                    onChange={(e) => setEditingBlog({ ...editingBlog, readTime: e.target.value })}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Cover Image URL</label>
-                <div className="flex space-x-3">
-                  <input
-                    type="text"
-                    value={editingBlog.coverImage}
-                    onChange={(e) => setEditingBlog({ ...editingBlog, coverImage: e.target.value })}
-                    className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
-                    placeholder="https://images.unsplash.com/..."
-                  />
-                  <button className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200">
-                    <Image className="w-5 h-5" />
+            {editingBlog && (
+              <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className="text-2xl font-bold">{editingBlog.id ? 'Edit Blog' : 'New Blog'}</h2>
+                  <button onClick={() => setEditingBlog(null)} className="text-gray-500 hover:text-gray-700">
+                    <X className="w-6 h-6" />
                   </button>
                 </div>
-                {editingBlog.coverImage && (
-                  <img src={editingBlog.coverImage} alt="Cover preview" className="mt-3 w-full h-48 object-cover rounded-lg" />
-                )}
+                <div className="space-y-4">
+                  <input type="text" placeholder="Title" value={editingBlog.title || ''} onChange={(e) => setEditingBlog({...editingBlog, title: e.target.value})} className="w-full px-4 py-3 border rounded-lg" />
+                  <input type="text" placeholder="Cover Image URL" value={editingBlog.coverImage || ''} onChange={(e) => setEditingBlog({...editingBlog, coverImage: e.target.value})} className="w-full px-4 py-3 border rounded-lg" />
+                  <select value={editingBlog.category || 'Student Life'} onChange={(e) => setEditingBlog({...editingBlog, category: e.target.value})} className="w-full px-4 py-3 border rounded-lg">
+                    <option>Student Life</option>
+                    <option>Admissions</option>
+                    <option>Travel Tips</option>
+                    <option>Academics</option>
+                  </select>
+                  <textarea placeholder="Excerpt" value={editingBlog.excerpt || ''} onChange={(e) => setEditingBlog({...editingBlog, excerpt: e.target.value})} className="w-full px-4 py-3 border rounded-lg" rows="2" />
+                  <textarea placeholder="Content" value={editingBlog.content || ''} onChange={(e) => setEditingBlog({...editingBlog, content: e.target.value})} className="w-full px-4 py-3 border rounded-lg" rows="10" />
+                  <button onClick={saveBlog} className="flex items-center space-x-2 px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700">
+                    <Save className="w-5 h-5" />
+                    <span>Save Blog</span>
+                  </button>
+                </div>
               </div>
+            )}
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Content (HTML)</label>
-                <textarea
-                  value={editingBlog.content}
-                  onChange={(e) => setEditingBlog({ ...editingBlog, content: e.target.value })}
-                  rows={15}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 font-mono text-sm"
-                  placeholder="<h2>Heading</h2><p>Content...</p>"
-                />
-              </div>
+            <div className="grid gap-4">
+              {blogs.map(blog => (
+                <div key={blog.id} className="bg-white rounded-lg shadow p-6 flex items-center justify-between">
+                  <div>
+                    <h3 className="font-bold text-lg">{blog.title}</h3>
+                    <p className="text-sm text-gray-600">{blog.category}</p>
+                  </div>
+                  <div className="flex space-x-2">
+                    <button onClick={() => setEditingBlog(blog)} className="p-2 text-blue-600 hover:bg-blue-50 rounded">
+                      <Edit2 className="w-5 h-5" />
+                    </button>
+                    <button onClick={() => deleteBlog(blog.id)} className="p-2 text-red-600 hover:bg-red-50 rounded">
+                      <Trash2 className="w-5 h-5" />
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
-              <div className="border-t pt-6">
-                <h3 className="font-medium text-gray-900 mb-3">Preview</h3>
-                <div 
-                  className="prose max-w-none bg-gray-50 p-6 rounded-lg"
-                  dangerouslySetInnerHTML={{ __html: editingBlog.content }}
-                />
+        {/* Testimonials Tab */}
+        {activeTab === 'testimonials' && (
+          <div>
+            <div className="mb-6">
+              <button onClick={() => setEditingTestimonial({ name: '', program: '', year: '', image: '', text: '' })} className="flex items-center space-x-2 px-6 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700">
+                <Plus className="w-5 h-5" />
+                <span>New Testimonial</span>
+              </button>
+            </div>
+
+            {editingTestimonial && (
+              <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className="text-2xl font-bold">{editingTestimonial.id ? 'Edit Testimonial' : 'New Testimonial'}</h2>
+                  <button onClick={() => setEditingTestimonial(null)} className="text-gray-500 hover:text-gray-700">
+                    <X className="w-6 h-6" />
+                  </button>
+                </div>
+                <div className="space-y-4">
+                  <input type="text" placeholder="Student Name" value={editingTestimonial.name || ''} onChange={(e) => setEditingTestimonial({...editingTestimonial, name: e.target.value})} className="w-full px-4 py-3 border rounded-lg" />
+                  <input type="text" placeholder="Program" value={editingTestimonial.program || ''} onChange={(e) => setEditingTestimonial({...editingTestimonial, program: e.target.value})} className="w-full px-4 py-3 border rounded-lg" />
+                  <input type="text" placeholder="Year" value={editingTestimonial.year || ''} onChange={(e) => setEditingTestimonial({...editingTestimonial, year: e.target.value})} className="w-full px-4 py-3 border rounded-lg" />
+                  <input type="text" placeholder="Image URL (optional)" value={editingTestimonial.image || ''} onChange={(e) => setEditingTestimonial({...editingTestimonial, image: e.target.value})} className="w-full px-4 py-3 border rounded-lg" />
+                  <textarea placeholder="Testimonial Text" value={editingTestimonial.text || ''} onChange={(e) => setEditingTestimonial({...editingTestimonial, text: e.target.value})} className="w-full px-4 py-3 border rounded-lg" rows="4" />
+                  <button onClick={saveTestimonial} className="flex items-center space-x-2 px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700">
+                    <Save className="w-5 h-5" />
+                    <span>Save Testimonial</span>
+                  </button>
+                </div>
               </div>
+            )}
+
+            <div className="grid gap-4">
+              {testimonials.map(testimonial => (
+                <div key={testimonial.id} className="bg-white rounded-lg shadow p-6 flex items-center justify-between">
+                  <div>
+                    <h3 className="font-bold text-lg">{testimonial.name}</h3>
+                    <p className="text-sm text-gray-600">{testimonial.program} - Class of {testimonial.year}</p>
+                  </div>
+                  <div className="flex space-x-2">
+                    <button onClick={() => setEditingTestimonial(testimonial)} className="p-2 text-blue-600 hover:bg-blue-50 rounded">
+                      <Edit2 className="w-5 h-5" />
+                    </button>
+                    <button onClick={() => deleteTestimonial(testimonial.id)} className="p-2 text-red-600 hover:bg-red-50 rounded">
+                      <Trash2 className="w-5 h-5" />
+                    </button>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         )}
